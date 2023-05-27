@@ -3,9 +3,12 @@ from math import log2
 
 class Note:
     NOTE_NAMES = 'C', 'D', 'E', 'F', 'G', 'A', 'B'
+    NOTE_NAMES_ALT = "Do", "Re", "Mi", "Fa", "Sol", "La", "Si"
     SUB = str.maketrans("-0123456789", "₋₀₁₂₃₄₅₆₇₈₉")
     NOTE_SEMITONE_STEPS = 0, 2, 4, 5, 7, 9, 11
     ACCIDENTALS = {-1: "♭", 0: "", 1: "♯"}
+
+    note_names = NOTE_NAMES
 
     def __init__(self, note_index: int, octave: int, accidental=0):
         self.note_index = note_index
@@ -19,7 +22,7 @@ class Note:
     
     @property
     def note_name(self):
-        return self.NOTE_NAMES[self.note_index]
+        return self.note_names[self.note_index]
     
     @property
     def is_natural(self):
@@ -60,6 +63,13 @@ class Note:
         cents = cents_from_a4 - 100 * semitones
         note = cls.note_from_semitone_value(69 + semitones)
         return note, round(cents, 2)
+    
+    @classmethod
+    def switch_note_display(cls):
+        if cls.note_names != cls.NOTE_NAMES:
+            cls.note_names = cls.NOTE_NAMES
+        else:
+            cls.note_names = cls.NOTE_NAMES_ALT
 
 
 note_a4 = Note(5, 4)

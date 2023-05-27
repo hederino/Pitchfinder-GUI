@@ -14,9 +14,9 @@ class MainWindowSubwidget(Widget):
         self.vlayout.addWidget(InfoLabel())
 
         self.line_edit_widget = LineEditWidget()
-        self.vlayout.addSpacing(8)
+        self.vlayout.addSpacing(4)
         self.vlayout.addWidget(self.line_edit_widget)
-        self.vlayout.addSpacing(16)
+        self.vlayout.addSpacing(6)
         self.display_label = DisplayLabel()
         self.vlayout.addWidget(self.display_label)
         self.vlayout.itemAt(4).setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
