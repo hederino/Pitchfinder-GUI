@@ -37,10 +37,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.quit_button_layout = QtWidgets.QHBoxLayout()
         self.main_layout.addLayout(self.quit_button_layout)
 
-        self.quit_button = ExitButton()
+        self.exit_button = ExitButton()
 
-        self.quit_button_layout.addSpacing(self.width() - 2 * self.quit_button.width() // 2)
-        self.quit_button_layout.addWidget(self.quit_button)
+        self.quit_button_layout.addSpacing(self.width() - 2 * self.exit_button.width() // 2)
+        self.quit_button_layout.addWidget(self.exit_button)
 
         self.centralWidget().setLayout(self.main_layout)
 
@@ -53,7 +53,7 @@ class MainWindow(QtWidgets.QMainWindow):
         enter_button = self.main_subwidget.line_edit_widget.input_button 
         enter_button.clicked.connect(lambda: display_label.setText(lineedit_to_output(line_edit.text())))
 
-        self.quit_button.clicked.connect(self.close)
+        self.exit_button.clicked.connect(self.close)
 
 
 def main():

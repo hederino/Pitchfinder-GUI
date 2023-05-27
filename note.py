@@ -1,5 +1,6 @@
 from math import log2
 
+
 class Note:
     NOTE_NAMES = 'C', 'D', 'E', 'F', 'G', 'A', 'B'
     SUB = str.maketrans("-0123456789", "₋₀₁₂₃₄₅₆₇₈₉")

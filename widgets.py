@@ -4,6 +4,7 @@ class Widget(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()  
 
+
 class MainWindowSubwidget(Widget):
     def __init__(self):
         super().__init__()
@@ -19,6 +20,7 @@ class MainWindowSubwidget(Widget):
         self.display_label = DisplayLabel()
         self.vlayout.addWidget(self.display_label)
         self.vlayout.itemAt(4).setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
+
 
 class Label(QtWidgets.QLabel):
     def __init__(self):
