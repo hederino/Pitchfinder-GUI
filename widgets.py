@@ -60,7 +60,7 @@ class ExitButton(PushButton):
     def __init__(self):
         super().__init__(text="Quit")
 
-        
+
 class InputLineEdit(QtWidgets.QLineEdit):
     def __init__(self):
         super().__init__()

@@ -61,4 +61,5 @@ class Note:
         note = cls.note_from_semitone_value(69 + semitones)
         return note, round(cents, 2)
 
+
 note_a4 = Note(5, 4)

@@ -39,7 +39,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.exit_button = ExitButton()
 
-        self.quit_button_layout.addSpacing(self.width() - 2 * self.exit_button.width() // 2)
+        self.quit_button_layout.addSpacing(self.width() - 2 * self.exit_button.width())
         self.quit_button_layout.addWidget(self.exit_button)
 
         self.centralWidget().setLayout(self.main_layout)
