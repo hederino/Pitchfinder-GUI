@@ -8,7 +8,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Pitchfinder GUI")
-        # set icon
+        self.setWindowIcon(QtGui.QIcon("icon.png"))
         self.setFixedSize(400, 220)
         self.init_UI()
         self.set_menubar()
