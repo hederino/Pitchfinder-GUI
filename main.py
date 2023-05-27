@@ -52,7 +52,6 @@ class MainWindow(QtWidgets.QMainWindow):
         display_label = self.main_subwidget.display_label
         enter_button = self.main_subwidget.line_edit_widget.input_button 
         enter_button.clicked.connect(lambda: display_label.setText(lineedit_to_output(line_edit.text())))
-
         self.exit_button.clicked.connect(self.close)
 
 
