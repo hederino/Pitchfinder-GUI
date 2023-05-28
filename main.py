@@ -1,6 +1,6 @@
 import sys
 from PyQt6 import QtWidgets, QtCore, QtGui
-from widgets import Widget, MainWindowSubwidget, ExitButton, FreqWindow, AdjustA4Action
+from widgets import Widget, MainWindowSubwidget, ExitButton, FreqWindow
 from note import Note
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -70,9 +70,13 @@ class MainWindow(QtWidgets.QMainWindow):
         line_edit = self.main_subwidget.line_edit_widget.line_edit
         display_label = self.main_subwidget.display_label
         enter_button = self.main_subwidget.line_edit_widget.input_button 
-        # TODO: fix the following:
-        enter_button.clicked.connect(lambda: display_label.setText(lineedit_to_output(line_edit.text())))
-        line_edit.returnPressed.connect(lambda: display_label.setText(lineedit_to_output(line_edit.text())))
+
+        def display_label_set_text():
+            txt = lineedit_to_output(line_edit.text())
+            display_label.setText(txt)
+
+        enter_button.clicked.connect(display_label_set_text)
+        line_edit.returnPressed.connect(display_label_set_text)
         self.exit_button.clicked.connect(self.close)
         self.freq_window.freq_changed.connect(Note.set_a4)
 
@@ -98,4 +102,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()         
+    main()  

@@ -156,12 +156,3 @@ class FreqWindow(Widget):
     def emit_signal_and_close(self):
         self.freq_changed.emit(self.current_a4)
         self.close()
-
-class AdjustA4Action(QtGui.QAction):
-    def __init__(self):
-        super().__init__()
-        self.update_upon_note_name_change()
-
-    def update_upon_note_name_change(self):
-        self.setText(f"Set reference frequency of {Note.note_a4()} ...")   
- 

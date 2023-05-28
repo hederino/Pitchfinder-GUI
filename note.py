@@ -2,7 +2,7 @@ from math import log2
 from settings import A4_DEFAULT
 from PyQt6 import QtCore
 
-class Note: #(QtCore.QObject):
+class Note:
     NOTE_NAMES = 'C', 'D', 'E', 'F', 'G', 'A', 'B'
     NOTE_NAMES_ALT = "Do", "Re", "Mi", "Fa", "Sol", "La", "Si"
     SUB = str.maketrans("-0123456789", "₋₀₁₂₃₄₅₆₇₈₉")
@@ -11,7 +11,6 @@ class Note: #(QtCore.QObject):
 
     note_names = NOTE_NAMES
     freq_a4 = A4_DEFAULT
-    # note_names_switched = QtCore.pyqtSignal()
 
     def __init__(self, note_index: int, octave: int, accidental=0):
         super().__init__()
@@ -74,10 +73,6 @@ class Note: #(QtCore.QObject):
             cls.note_names = cls.NOTE_NAMES
         else:
             cls.note_names = cls.NOTE_NAMES_ALT
-        # cls.note_names_switched.emit()
-        # a4 = cls.note_a4()
-        # a4.note_names_switched.emit()
-        # working around the error when the class attempts to send the signal
 
     @classmethod
     def set_a4(cls, freq):
