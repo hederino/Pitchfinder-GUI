@@ -107,7 +107,7 @@ class FreqSpinBox(QtWidgets.QDoubleSpinBox):
         self.setValue(A4_DEFAULT)
         self.setSuffix(" Hz")
 
-    def showEvent(self, a0):
+    def showEvent(self, ev):
         self.setValue(Note.freq_a4)
 
 
@@ -122,7 +122,6 @@ class FreqWindow(Widget):
         self.hlayout = QtWidgets.QHBoxLayout()
         self.vlayout = QtWidgets.QVBoxLayout()
         self.label = QtWidgets.QLabel()
-        # self.label.setText(f"Set the frequency of {Note.note_a4()} : ")
         self.freq_spinbox = FreqSpinBox()
         self.hlayout.addWidget(self.label)
         self.hlayout.addWidget(self.freq_spinbox)

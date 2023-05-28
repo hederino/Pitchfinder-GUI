@@ -84,13 +84,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.freq_window.update_upon_note_name_change()
         self.adjust_a4.setText(f"Set reference frequency of {Note.note_a4()} ...")
 
+    def closeEvent(self, ev):
+        # save settings
+        pass    
+
 
 def lineedit_to_output(s: str):
     try:
         freq = float(s)
         n, cents = Note.freq_to_note(freq)
         note_str = str(n) if n.is_natural else f"{n}/{n.enharmonic_note()}"
-        return f"{note_str} ({cents:+} cents)"
+        cents_str = f" ({cents:+} cents)" if cents else ""
+        return f"{note_str}{cents_str}"
     except ValueError:
         return "Invalid input." 
 
