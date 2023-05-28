@@ -100,11 +100,13 @@ class FreqSpinBox(QtWidgets.QDoubleSpinBox):
     def __init__(self):
         super().__init__()
         self.setDecimals(3)
-        self.setMinimum(A4_MIN)  # consts
+        self.setMinimum(A4_MIN)
         self.setMaximum(A4_MAX)
         self.setValue(A4_DEFAULT)
-        # self.setFixedWidth(80)
         self.setSuffix(" Hz")
+
+    def showEvent(self, a0):
+        self.setValue(Note.freq_a4)
 
 
 class FreqWindow(Widget):
@@ -152,7 +154,6 @@ class FreqWindow(Widget):
     def emit_signal_and_close(self):
         self.freq_changed.emit(self.current_a4)
         self.close()
-
 
 class AdjustA4Action(QtGui.QAction):
     def __init__(self):
