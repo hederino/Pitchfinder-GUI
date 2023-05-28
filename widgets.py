@@ -1,8 +1,11 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
+import sys
+
+from settings import *
 
 class Widget(QtWidgets.QWidget):
-    def __init__(self):
-        super().__init__()  
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)  
 
 
 class MainWindowSubwidget(Widget):
@@ -40,7 +43,10 @@ class DisplayLabel(Label):
         self.setFrameShape(QtWidgets.QFrame.Shape.Box)
         self.setFixedHeight(40)
         self.setFixedWidth(165)
-        self.setFont(QtGui.QFont("Segoe UI Symbol")) # this font correctly displays the flat symbol 
+        self.setFont(QtGui.QFont("Segoe UI Symbol"))
+        # this font correctly displays the flat symbol
+        self.setTextInteractionFlags(QtCore.Qt.TextInteractionFlag.TextSelectableByMouse 
+                                     | QtCore.Qt.TextInteractionFlag.TextSelectableByKeyboard)
 
 
 class PushButton(QtWidgets.QPushButton):
@@ -94,8 +100,59 @@ class FreqSpinBox(QtWidgets.QDoubleSpinBox):
     def __init__(self):
         super().__init__()
         self.setDecimals(3)
-        self.setMinimum(400.0)  # consts
-        self.setMaximum(500.0)
-        self.setValue(440.0)
+        self.setMinimum(A4_MIN)  # consts
+        self.setMaximum(A4_MAX)
+        self.setValue(A4_DEFAULT)
         # self.setFixedWidth(80)
         self.setSuffix(" Hz")
+
+
+class FreqWindow(Widget):
+    freq_changed = QtCore.pyqtSignal(float)
+
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Change reference frequency")
+        self.setWindowIcon(QtGui.QIcon("icon.png"))
+        self.setWindowModality(QtCore.Qt.WindowModality.ApplicationModal)
+        self.hlayout = QtWidgets.QHBoxLayout()
+        self.vlayout = QtWidgets.QVBoxLayout()
+        self.label = QtWidgets.QLabel()
+        self.label.setText("Set the frequency of A4: ")
+        self.freq_spinbox = FreqSpinBox()
+        self.hlayout.addWidget(self.label)
+        self.hlayout.addWidget(self.freq_spinbox)
+        
+        self.vlayout.addLayout(self.hlayout)
+        self.vlayout.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
+
+        self.ok_button = EnterButton()
+        self.ok_button.setText("OK")
+        self.vlayout.addSpacing(12)
+
+        self.hlayout2 = QtWidgets.QHBoxLayout()
+        self.hlayout2.addSpacerItem(Spacer())
+        self.hlayout2.addWidget(self.ok_button)
+        self.hlayout2.addSpacerItem(Spacer())
+        self.vlayout.addLayout(self.hlayout2)
+        self.setLayout(self.vlayout)
+        self.setFixedSize(330, 100)
+
+        self.ok_button.clicked.connect(self.emit_signal_and_close)
+        
+    @property
+    def current_a4(self):
+        return float(self.freq_spinbox.value()) 
+
+    def emit_signal_and_close(self):
+        self.freq_changed.emit(self.current_a4)
+        self.close()
+
+
+
+if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
+    mw = FreqWindow()
+    mw.show()
+    sys.exit(app.exec())
+  

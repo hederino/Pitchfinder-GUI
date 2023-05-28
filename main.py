@@ -1,8 +1,7 @@
 import sys
 from PyQt6 import QtWidgets, QtCore, QtGui
-from widgets import Widget, MainWindowSubwidget, ExitButton
-from note import Note, note_a4
-
+from widgets import Widget, MainWindowSubwidget, ExitButton, FreqWindow
+from note import Note
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -24,22 +23,28 @@ class MainWindow(QtWidgets.QMainWindow):
         self.main_subwidget = MainWindowSubwidget()
         self.main_layout.addWidget(self.main_subwidget)
 
-        self.quit_button_layout = QtWidgets.QHBoxLayout()
-        self.main_layout.addLayout(self.quit_button_layout)
+        self.exit_button_layout = QtWidgets.QHBoxLayout()
+        self.main_layout.addLayout(self.exit_button_layout)
 
         self.exit_button = ExitButton()
 
-        self.quit_button_layout.addSpacing(self.width() - 2 * self.exit_button.width())
-        self.quit_button_layout.addWidget(self.exit_button)
+        self.exit_button_layout.addSpacing(self.width() - 2 * self.exit_button.width())
+        self.exit_button_layout.addWidget(self.exit_button)
 
         self.centralWidget().setLayout(self.main_layout)
 
     def set_menubar(self):
         self.menubar = QtWidgets.QMenuBar()
-        settings_menu = self.menubar.addMenu('&Settings')
-        note_display = settings_menu.addMenu("Note names")
+        settings_menu = self.menubar.addMenu("&Settings")
+        help = self.menubar.addMenu("&Help")
+        about_qt = QtGui.QAction("About Qt...", help)
+        help.addAction(about_qt)
+        about_qt.triggered.connect(lambda: QtWidgets.QMessageBox.aboutQt(self, "About Qt"))
+        adjust_a4 = settings_menu.addAction("Set reference frequency of A4...")
 
-        # note_display.addAction()
+        self.freq_window = FreqWindow()
+
+        note_display = settings_menu.addMenu("Note names")
 
         abc = QtGui.QAction("A, B, C", note_display)
         note_display.addAction(abc)
@@ -57,7 +62,8 @@ class MainWindow(QtWidgets.QMainWindow):
         do_re_mi.setCheckable(True)
 
         do_re_mi.toggled.connect(Note.switch_note_display)
-        # do_re_mi.toggled.connect(self.sfw.label_a4.text_update)
+        adjust_a4.triggered.connect(self.freq_window.show)
+        # connect to update texts containing note representations
         self.setMenuBar(self.menubar)
 
     def connect_signals(self):
@@ -66,6 +72,7 @@ class MainWindow(QtWidgets.QMainWindow):
         enter_button = self.main_subwidget.line_edit_widget.input_button 
         enter_button.clicked.connect(lambda: display_label.setText(lineedit_to_output(line_edit.text())))
         self.exit_button.clicked.connect(self.close)
+        self.freq_window.freq_changed.connect(Note.set_a4)
 
 
 def lineedit_to_output(s: str):
@@ -77,7 +84,6 @@ def lineedit_to_output(s: str):
     except ValueError:
         return "Invalid input." 
  
-
 def main():
     app = QtWidgets.QApplication(sys.argv)
     mw = MainWindow()

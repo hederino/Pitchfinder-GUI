@@ -1,5 +1,5 @@
 from math import log2
-
+from settings import A4_DEFAULT
 
 class Note:
     NOTE_NAMES = 'C', 'D', 'E', 'F', 'G', 'A', 'B'
@@ -9,6 +9,7 @@ class Note:
     ACCIDENTALS = {-1: "♭", 0: "", 1: "♯"}
 
     note_names = NOTE_NAMES
+    freq_a4 = A4_DEFAULT
 
     def __init__(self, note_index: int, octave: int, accidental=0):
         self.note_index = note_index
@@ -41,8 +42,8 @@ class Note:
             return self
         return self.note_from_semitone_value(self.semitone_value, self.accidental == 1)
 
-    def note_to_freq(self, a4=440.0):
-        return round(a4 * 2 ** ((self.semitone_value - 69) / 12), 3)
+    def note_to_freq(self):
+        return round(self.freq_a4 * 2 ** ((self.semitone_value - 69) / 12), 3)
 
     @classmethod
     def note_from_semitone_value(cls, n, flat=False):
@@ -57,8 +58,8 @@ class Note:
         return Note(index, octave, acc)
     
     @classmethod
-    def freq_to_note(cls, freq, a4=440.0):
-        cents_from_a4 = 1200 * log2(freq / a4)
+    def freq_to_note(cls, freq):
+        cents_from_a4 = 1200 * log2(freq / cls.freq_a4)
         semitones = round(cents_from_a4 / 100)
         cents = cents_from_a4 - 100 * semitones
         note = cls.note_from_semitone_value(69 + semitones)
@@ -70,6 +71,10 @@ class Note:
             cls.note_names = cls.NOTE_NAMES
         else:
             cls.note_names = cls.NOTE_NAMES_ALT
-
+            
+    @classmethod
+    def set_a4(cls, freq):
+        cls.freq_a4 = freq 
+    # No need to check, the only input comes from the spinbox which does the job already
 
 note_a4 = Note(5, 4)
