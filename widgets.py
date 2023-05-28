@@ -1,5 +1,5 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
-import sys
+from note import Note
 
 from settings import *
 
@@ -118,7 +118,7 @@ class FreqWindow(Widget):
         self.hlayout = QtWidgets.QHBoxLayout()
         self.vlayout = QtWidgets.QVBoxLayout()
         self.label = QtWidgets.QLabel()
-        self.label.setText("Set the frequency of A4: ")
+        # self.label.setText(f"Set the frequency of {Note.note_a4()} : ")
         self.freq_spinbox = FreqSpinBox()
         self.hlayout.addWidget(self.label)
         self.hlayout.addWidget(self.freq_spinbox)
@@ -139,20 +139,26 @@ class FreqWindow(Widget):
         self.setFixedSize(330, 100)
 
         self.ok_button.clicked.connect(self.emit_signal_and_close)
+        self.update_upon_note_name_change()
         
     @property
     def current_a4(self):
-        return float(self.freq_spinbox.value()) 
+        return float(self.freq_spinbox.value())
+    
+    @QtCore.pyqtSlot()
+    def update_upon_note_name_change(self):
+        self.label.setText(f"Set the frequency of {Note.note_a4()} : ")
 
     def emit_signal_and_close(self):
         self.freq_changed.emit(self.current_a4)
         self.close()
 
 
+class AdjustA4Action(QtGui.QAction):
+    def __init__(self):
+        super().__init__()
+        self.update_upon_note_name_change()
 
-if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    mw = FreqWindow()
-    mw.show()
-    sys.exit(app.exec())
-  
+    def update_upon_note_name_change(self):
+        self.setText(f"Set reference frequency of {Note.note_a4()} ...")   
+ 

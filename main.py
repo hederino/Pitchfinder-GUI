@@ -1,6 +1,6 @@
 import sys
 from PyQt6 import QtWidgets, QtCore, QtGui
-from widgets import Widget, MainWindowSubwidget, ExitButton, FreqWindow
+from widgets import Widget, MainWindowSubwidget, ExitButton, FreqWindow, AdjustA4Action
 from note import Note
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -40,8 +40,7 @@ class MainWindow(QtWidgets.QMainWindow):
         about_qt = QtGui.QAction("About Qt...", help)
         help.addAction(about_qt)
         about_qt.triggered.connect(lambda: QtWidgets.QMessageBox.aboutQt(self, "About Qt"))
-        adjust_a4 = settings_menu.addAction("Set reference frequency of A4...")
-
+        self.adjust_a4 = settings_menu.addAction(f"Set reference frequency of {Note.note_a4()} ...")
         self.freq_window = FreqWindow()
 
         note_display = settings_menu.addMenu("Note names")
@@ -62,7 +61,8 @@ class MainWindow(QtWidgets.QMainWindow):
         do_re_mi.setCheckable(True)
 
         do_re_mi.toggled.connect(Note.switch_note_display)
-        adjust_a4.triggered.connect(self.freq_window.show)
+        do_re_mi.toggled.connect(self.update_upon_note_name_change)
+        self.adjust_a4.triggered.connect(self.freq_window.show)
         # connect to update texts containing note representations
         self.setMenuBar(self.menubar)
 
@@ -73,6 +73,13 @@ class MainWindow(QtWidgets.QMainWindow):
         enter_button.clicked.connect(lambda: display_label.setText(lineedit_to_output(line_edit.text())))
         self.exit_button.clicked.connect(self.close)
         self.freq_window.freq_changed.connect(Note.set_a4)
+
+    def update_upon_note_name_change(self):
+        self.freq_window.update_upon_note_name_change()
+        self.adjust_a4.setText(f"Set reference frequency of {Note.note_a4()} ...")
+        
+
+        
 
 
 def lineedit_to_output(s: str):
