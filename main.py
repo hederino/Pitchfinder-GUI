@@ -70,16 +70,15 @@ class MainWindow(QtWidgets.QMainWindow):
         line_edit = self.main_subwidget.line_edit_widget.line_edit
         display_label = self.main_subwidget.display_label
         enter_button = self.main_subwidget.line_edit_widget.input_button 
+        # TODO: fix the following:
         enter_button.clicked.connect(lambda: display_label.setText(lineedit_to_output(line_edit.text())))
+        line_edit.returnPressed.connect(lambda: display_label.setText(lineedit_to_output(line_edit.text())))
         self.exit_button.clicked.connect(self.close)
         self.freq_window.freq_changed.connect(Note.set_a4)
 
     def update_upon_note_name_change(self):
         self.freq_window.update_upon_note_name_change()
         self.adjust_a4.setText(f"Set reference frequency of {Note.note_a4()} ...")
-        
-
-        
 
 
 def lineedit_to_output(s: str):
@@ -90,7 +89,7 @@ def lineedit_to_output(s: str):
         return f"{note_str} ({cents:+} cents)"
     except ValueError:
         return "Invalid input." 
- 
+
 def main():
     app = QtWidgets.QApplication(sys.argv)
     mw = MainWindow()

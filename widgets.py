@@ -71,6 +71,8 @@ class InputLineEdit(QtWidgets.QLineEdit):
     def __init__(self):
         super().__init__()
         self.setFixedWidth(150)
+        self.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.setMaxLength(9)
         
 
 class LineEditWidget(Widget):
@@ -90,7 +92,7 @@ class LineEditWidget(Widget):
         self.hlayout.setSpacing(0)
         self.hlayout.setContentsMargins(0, 0, 0, 0)
 
-
+       
 class Spacer(QtWidgets.QSpacerItem):
     def __init__(self):
         super().__init__(75, 20)
