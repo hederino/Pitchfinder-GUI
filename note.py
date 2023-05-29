@@ -1,6 +1,6 @@
 from math import log2
 from settings import A4_DEFAULT
-from PyQt6 import QtCore
+
 
 class Note:
     NOTE_NAMES = 'C', 'D', 'E', 'F', 'G', 'A', 'B'

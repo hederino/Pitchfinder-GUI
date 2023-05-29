@@ -48,6 +48,22 @@ class DisplayLabel(Label):
         self.setTextInteractionFlags(QtCore.Qt.TextInteractionFlag.TextSelectableByMouse 
                                      | QtCore.Qt.TextInteractionFlag.TextSelectableByKeyboard)
 
+    def update_upon_note_name_change(self):
+        self.setText(self.text())
+
+    @staticmethod
+    def lineedit_to_label_text(s: str):
+        if not s.strip():
+            return ""
+        try:
+            freq = float(s)
+            n, cents = Note.freq_to_note(freq)
+            note_str = str(n) if n.is_natural else f"{n}/{n.enharmonic_note()}"
+            cents_str = f" ({cents:+} cents)" if cents else ""
+            return f"{note_str}{cents_str}"
+        except ValueError:
+            return "Invalid input."     
+
 
 class PushButton(QtWidgets.QPushButton):
     def __init__(self, text: str = None):
@@ -140,8 +156,6 @@ class FreqWindow(Widget):
         self.vlayout.addLayout(self.hlayout2)
         self.setLayout(self.vlayout)
         self.setFixedSize(330, 100)
-
-        self.ok_button.clicked.connect(self.emit_signal_and_close)
         self.update_upon_note_name_change()
         
     @property
@@ -152,6 +166,7 @@ class FreqWindow(Widget):
     def update_upon_note_name_change(self):
         self.label.setText(f"Set the frequency of {Note.note_a4()} : ")
 
+    @QtCore.pyqtSlot()
     def emit_signal_and_close(self):
         self.freq_changed.emit(self.current_a4)
         self.close()
