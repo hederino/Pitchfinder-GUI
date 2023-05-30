@@ -97,21 +97,26 @@ class LineEditWidget(Widget):
         self.hlayout = QtWidgets.QHBoxLayout()
         self.setLayout(self.hlayout)
         self.line_edit = InputLineEdit()
-        self.input_button = EnterButton()
+        self.enter_button = EnterButton()
 
-        self.hlayout.addSpacerItem(Spacer())
+        self.hlayout.addSpacerItem(SpacerLarge())
         self.hlayout.addWidget(self.line_edit)
-        self.hlayout.addWidget(self.input_button)
-        self.hlayout.addSpacerItem(Spacer())
+        self.hlayout.addWidget(self.enter_button)
+        self.hlayout.addSpacerItem(SpacerLarge())
         self.hlayout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         self.hlayout.setSpacing(0)
         self.hlayout.setContentsMargins(0, 0, 0, 0)
 
-       
-class Spacer(QtWidgets.QSpacerItem):
+
+class SpacerLarge(QtWidgets.QSpacerItem):
     def __init__(self):
         super().__init__(75, 20)
+
+
+class SpacerSmall(QtWidgets.QSpacerItem):
+    def __init__(self):
+        super().__init__(30, 20)
 
 
 class FreqSpinBox(QtWidgets.QDoubleSpinBox):
@@ -127,7 +132,7 @@ class FreqSpinBox(QtWidgets.QDoubleSpinBox):
         self.setValue(Note.freq_a4)
 
 
-class FreqWindow(Widget):
+class FreqWindow(QtWidgets.QDialog):
     freq_changed = QtCore.pyqtSignal(float)
 
     def __init__(self):
@@ -141,23 +146,25 @@ class FreqWindow(Widget):
         self.freq_spinbox = FreqSpinBox()
         self.hlayout.addWidget(self.label)
         self.hlayout.addWidget(self.freq_spinbox)
-        
         self.vlayout.addLayout(self.hlayout)
         self.vlayout.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
-
-        self.ok_button = EnterButton()
-        self.ok_button.setText("OK")
+        self.ok_button = PushButton("OK")
+        self.ok_button.setDefault(True)
+        self.cancel_button = PushButton("Cancel")
+        self.reset_button = PushButton("Reset to default")
+        self.reset_button.setFixedWidth(95)
         self.vlayout.addSpacing(12)
-
         self.hlayout2 = QtWidgets.QHBoxLayout()
-        self.hlayout2.addSpacerItem(Spacer())
+        self.hlayout2.addSpacerItem(SpacerSmall())
+        self.hlayout2.addWidget(self.reset_button)
         self.hlayout2.addWidget(self.ok_button)
-        self.hlayout2.addSpacerItem(Spacer())
+        self.hlayout2.addWidget(self.cancel_button)
+        self.hlayout2.addSpacerItem(SpacerSmall())
         self.vlayout.addLayout(self.hlayout2)
         self.setLayout(self.vlayout)
         self.setFixedSize(330, 100)
         self.update_upon_note_name_change()
-        
+
     @property
     def current_a4(self):
         return float(self.freq_spinbox.value())
@@ -170,3 +177,7 @@ class FreqWindow(Widget):
     def emit_signal_and_close(self):
         self.freq_changed.emit(self.current_a4)
         self.close()
+
+    @QtCore.pyqtSlot()
+    def reset_freq(self):
+        self.freq_spinbox.setValue(A4_DEFAULT)

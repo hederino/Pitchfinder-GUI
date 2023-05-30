@@ -4,6 +4,7 @@ from widgets import Widget, MainWindowSubwidget, ExitButton, FreqWindow
 from note import Note
 
 class MainWindow(QtWidgets.QMainWindow):
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Pitchfinder GUI")
@@ -14,7 +15,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.connect_signals()
 
     def init_UI(self):    
-
         self.main_layout = QtWidgets.QVBoxLayout()
         self.main_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
         self.setCentralWidget(Widget())
@@ -26,6 +26,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.exit_button_layout.addSpacing(self.width() - 2 * self.exit_button.width())
         self.exit_button_layout.addWidget(self.exit_button)
         self.centralWidget().setLayout(self.main_layout)
+        self.freq_window = FreqWindow()
 
     def set_menubar(self):
         self.menubar = QtWidgets.QMenuBar()
@@ -33,8 +34,12 @@ class MainWindow(QtWidgets.QMainWindow):
         help = self.menubar.addMenu("&Help")
         self.about_qt = QtGui.QAction("About Qt...", help)
         help.addAction(self.about_qt)
-        self.adjust_a4 = settings_menu.addAction(f"Set reference frequency of {Note.note_a4()} ...")
-        self.freq_window = FreqWindow()
+        
+        self.adjust_a4 = settings_menu.addAction("")
+        self.adjust_a4_txt = lambda: self.adjust_a4.setText(
+            f"Set reference frequency of {Note.note_a4()} ...")
+        self.adjust_a4_txt()
+
         note_display = settings_menu.addMenu("Note names")
         abc = QtGui.QAction("A, B, C", note_display)
         note_display.addAction(abc)
@@ -52,7 +57,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def connect_signals(self):
         self.line_edit = self.main_subwidget.line_edit_widget.line_edit
         self.display_label = self.main_subwidget.display_label
-        self.enter_button = self.main_subwidget.line_edit_widget.input_button 
+        self.enter_button = self.main_subwidget.line_edit_widget.enter_button 
 
         def display_label_set_text():
             txt = self.display_label.lineedit_to_label_text(self.line_edit.text())
@@ -67,6 +72,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.about_qt.triggered.connect(lambda: QtWidgets.QMessageBox.aboutQt(self, "About Qt"))
         self.adjust_a4.triggered.connect(self.freq_window.show)
         self.do_re_mi.toggled.connect(self.update_upon_note_name_change)
+        self.freq_window.reset_button.clicked.connect(self.freq_window.reset_freq)
+        self.freq_window.cancel_button.clicked.connect(self.freq_window.close)
 
 
     @QtCore.pyqtSlot()
@@ -74,7 +81,7 @@ class MainWindow(QtWidgets.QMainWindow):
         Note.switch_note_display()
         self.freq_window.update_upon_note_name_change()
         self.enter_button.click()  # activate button to update text
-        self.adjust_a4.setText(f"Set reference frequency of {Note.note_a4()} ...") #FIXME: repeated!
+        self.adjust_a4_txt()
 
     def closeEvent(self, ev):
         # save settings
