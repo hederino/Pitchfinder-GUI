@@ -2,6 +2,7 @@ import sys
 from PyQt6 import QtWidgets, QtCore, QtGui
 from widgets import Widget, MainWindowSubwidget, ExitButton, FreqWindow
 from note import Note
+from settings import settings, save_settings
 
 class MainWindow(QtWidgets.QMainWindow):
 
@@ -13,6 +14,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.init_UI()
         self.set_menubar()
         self.connect_signals()
+        self.load_settings()
 
     def init_UI(self):    
         self.main_layout = QtWidgets.QVBoxLayout()
@@ -36,9 +38,9 @@ class MainWindow(QtWidgets.QMainWindow):
         help.addAction(self.about_qt)
         
         self.adjust_a4 = settings_menu.addAction("")
-        self.adjust_a4_txt = lambda: self.adjust_a4.setText(
+        self.set_adjust_a4_txt = lambda: self.adjust_a4.setText(
             f"Set reference frequency of {Note.note_a4()} ...")
-        self.adjust_a4_txt()
+        self.set_adjust_a4_txt()
 
         note_display = settings_menu.addMenu("Note names")
         abc = QtGui.QAction("A, B, C", note_display)
@@ -75,21 +77,24 @@ class MainWindow(QtWidgets.QMainWindow):
         self.freq_window.reset_button.clicked.connect(self.freq_window.reset_freq)
         self.freq_window.cancel_button.clicked.connect(self.freq_window.close)
 
-
     @QtCore.pyqtSlot()
     def update_upon_note_name_change(self):
         Note.switch_note_display()
         self.freq_window.update_upon_note_name_change()
         self.enter_button.click()  # activate button to update text
-        self.adjust_a4_txt()
+        self.set_adjust_a4_txt()
+
+    def load_settings(self):
+        Note.set_a4(settings["a4"])
+        self.do_re_mi.setChecked(settings["do_re_mi_toggled"])
 
     def closeEvent(self, ev):
-        # save settings
-        pass    
+        save_settings(Note.freq_a4, self.do_re_mi.isChecked())
 
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create('Fusion'))
     mw = MainWindow()
     mw.show()
     sys.exit(app.exec())
