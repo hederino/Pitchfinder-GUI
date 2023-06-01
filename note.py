@@ -1,7 +1,6 @@
 from math import log2
 from settings import A4_DEFAULT
 
-
 class Note:
     NOTE_NAMES = 'C', 'D', 'E', 'F', 'G', 'A', 'B'
     NOTE_NAMES_ALT = "Do", "Re", "Mi", "Fa", "Sol", "La", "Si"
